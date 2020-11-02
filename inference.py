@@ -6,7 +6,7 @@ from torchvision import models
 from torchvision.models import densenet121
 from fastai.vision.all import *
 
-from  app.get_digits import get_digits_from_image
+from  src.get_digits import get_digits_from_image
 
 def make_parser():
     parser = ArgumentParser(description="MongoDB to PostgreSQL migrator")
