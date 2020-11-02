@@ -8,6 +8,15 @@ from fastai.vision.all import *
 
 from  app.get_digits import get_digits_from_image
 
+def make_parser():
+    parser = ArgumentParser(description="MongoDB to PostgreSQL migrator")
+
+    parser.add_argument('--image', '-ip', type=str, required=True,
+                        help='path to the image')
+    parser.add_argument('--learner_path', '-lp', type=str, required=True,
+                        help='path to the learner')
+    return parser
+
 def num_from_digits(digits):
   reversed = digits[::-1]
   sum = 0
@@ -46,19 +55,15 @@ def inference(image, learner):
 
   return num_from_digits(y)
 
-def make_parser():
-    parser = ArgumentParser(description="MongoDB to PostgreSQL migrator")
-
-    parser.add_argument('--image_path', '-ip', type=str, required=True,
-                        help='path to the image')
-    parser.add_argument('--learner_path', '-lp', type=str, required=True,
-                        help='path to the learner')
-    return parser
-
 def main():
     parser = make_parser()
     args = parser.parse_args()
-    image_path = args.image_path
+    image = args.image
+    if isinstance(image, str):
+      inference(cv2.imread(image), load_learner(learner_path))
+    elif isinstance(image, (np.ndarray, np.generic)):
+      inference(image, load_learner(learner_path))
+
     learner_path = args.learner_path
 
     return inference(cv2.imread(image_path), load_learner(learner_path))
