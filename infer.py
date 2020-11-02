@@ -44,7 +44,8 @@ def inference(image, learner):
       arr.cuda()
     
     pred = learner.model(arr)
-    res = [torch.argmax(nn.Softmax()(pred)), nn.Softmax()(pred)]
+    softmaxed = nn.Softmax(dim=0)(pred)
+    res = [torch.argmax(softmaxed), softmaxed]
 
     if res[0] == '0':
       if torch.max(res[2]) > 0.7:
