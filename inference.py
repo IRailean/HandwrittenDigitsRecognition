@@ -6,7 +6,7 @@ from torchvision import models
 from torchvision.models import densenet121
 from fastai.vision.all import *
 
-from  src.get_digits import get_digits_from_image
+from  .get_digits import get_digits_from_image
 
 def make_parser():
     parser = ArgumentParser(description="MongoDB to PostgreSQL migrator")
@@ -43,7 +43,8 @@ def inference(image, learner):
       learner.model.cuda()
       arr.cuda()
     
-    res = learner.model(arr)
+    pred = learner.model(arr)
+    res = [torch.argmax(nn.Softmax()(pred)), nn.Softmax()(pred)]
 
     if res[0] == '0':
       if torch.max(res[2]) > 0.7:
