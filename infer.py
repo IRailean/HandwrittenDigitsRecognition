@@ -30,22 +30,13 @@ def inference(image, learner):
     return 0
   y = []
   for d in digits:
-    arr = torch.tensor(d[0] * 255).squeeze(2)
-    arr = cv2.resize(np.array(arr), (224, 224), cv2.INTER_LINEAR)
-    arr = transforms.ToTensor()(arr)
-    arr = TensorImage(arr)
-    arr = IntToFloatTensor()(arr) 
-    arr = Normalize.from_stats(*imagenet_stats)(arr)
-    
-    learner.model.eval()
+    arr = torch.tensor(d[0] * 255.0).squeeze(2).float()
 
     if torch.cuda.is_available():
       learner.model.cuda()
       arr.cuda()
     
-    pred = learner.model(arr)
-    softmaxed = nn.Softmax(dim=1)(pred)
-    res = [torch.argmax(softmaxed), softmaxed]
+    res = learner.predict(arr)
 
     if res[0] == '0':
       if torch.max(res[2]) > 0.7:
